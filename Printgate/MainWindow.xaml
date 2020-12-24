@@ -1,0 +1,230 @@
+﻿<Window x:Class="Printgate.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Printgate"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        mc:Ignorable="d"
+        Title="Printgate" Width="1200" Height="800" >
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="4*" />
+        </Grid.ColumnDefinitions>
+        <ScrollViewer  Grid.Column="0" VerticalScrollBarVisibility="Hidden">
+            <StackPanel Margin="20,0,0,0">
+                <StackPanel>
+                    <GroupBox Header="Server" Padding="10" Margin="20">
+                        <StackPanel Orientation="Vertical">
+                            <TextBox
+                                Name="ServerAddress"
+                                materialDesign:HintAssist.Hint="Joomla Server"
+                                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                VerticalAlignment="Center"  Margin="0, 0, 0, 20"/>
+                            <ComboBox
+                                materialDesign:HintAssist.Hint="Printer (Reservation)" Margin="0, 0, 0, 20">
+                                <ComboBoxItem>Fax</ComboBoxItem>
+                                <ComboBoxItem>Microsoft Print To PDF</ComboBoxItem>
+                                <ComboBoxItem>Microsoft XPS Document Writer</ComboBoxItem>
+                                <ComboBoxItem>OneNote for Windows 10</ComboBoxItem>
+                            </ComboBox>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+                <StackPanel Margin="0,18,0,0">
+                    <Expander HorizontalAlignment="Stretch" Header="Take Away" IsExpanded="True">
+                        <GroupBox Header="" Margin="16" Padding="22,0,22,0">
+                            <StackPanel Orientation="Vertical" Margin="0,16,0,0">
+                                <StackPanel Name="PrinterList" Orientation="Vertical">
+                                    <!--<ComboBox Name="Printer1"
+                                        materialDesign:HintAssist.Hint="Printer (Take Away)" 
+                                        ItemsSource="{Binding PrinterNames, Mode=OneWay}"
+                                        Margin="0, 0, 0, 16" >
+                                    </ComboBox>-->
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <Button
+                                        Style="{StaticResource MaterialDesignFlatAccentBgButton}"
+                                        Width="100"
+                                        ToolTip="Resource name: MaterialDesignFlatAccentBgButton"
+                                        materialDesign:RippleAssist.IsDisabled="True"
+                                        Click="AddPrinterButton_Click"
+                                        Margin="0, 22, 0, 16" >
+                                        ADD
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <!--</materialDesign:Card>-->
+                    </Expander>
+                </StackPanel>
+                <StackPanel Margin="0,18,0,0">
+                    <Expander HorizontalAlignment="Stretch" Header="Beautiful Printer" IsExpanded="True">
+                        <GroupBox Header="" Margin="16" Padding="22,0,22,0">
+                            <StackPanel Orientation="Vertical" Margin="0,16,0,0">
+                                <ComboBox
+                                    materialDesign:HintAssist.Hint="Printer (Take Away)" 
+                                    Margin="0, 0, 0, 16" >
+                                    <ComboBoxItem>Fax</ComboBoxItem>
+                                    <ComboBoxItem>Microsoft Print To PDF</ComboBoxItem>
+                                    <ComboBoxItem>Microsoft XPS Document Writer</ComboBoxItem>
+                                    <ComboBoxItem>OneNote for Windows 10</ComboBoxItem>
+                                </ComboBox>
+                            </StackPanel>
+                        </GroupBox>
+                    </Expander>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Hidden" Padding="10,0,0,0">
+            <StackPanel>
+                <GroupBox Header="Options" Padding="10" Margin="20">
+                    <StackPanel>
+                        <CheckBox x:Name="XmlExportCheck"
+                            IsChecked="{Binding Path=Settings.ExportXml}"
+                            IsThreeState="False" Margin="10 10 0 12"> 
+                            Export to a XML
+                        </CheckBox>
+                        <CheckBox x:Name="AlarmIfNoInternetCheck"
+                            IsChecked="{Binding Path=Settings.AlarmNoConnection}"      
+                            IsThreeState="False" Margin="10 0 0 12">
+                            Alarm if no internet connection
+                        </CheckBox>
+                        <CheckBox x:Name="MessageForGuestCheck"
+                            IsChecked="{Binding Path=Settings.WelcomeMessage}"  
+                            IsThreeState="False" Margin="10 0 0 12">
+                            Welcome message for guests
+                        </CheckBox>
+                        <CheckBox x:Name="AddressMapCheck"
+                            IsChecked="{Binding Path=Settings.FullAddressMap}"  
+                            IsThreeState="False" Margin="10 0 0 32">
+                            Full address and map for delivery
+                        </CheckBox>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <CheckBox x:Name="PopupTableReservCheck"
+                                IsChecked="{Binding Path=Settings.TableReservationPopup}"  
+                                IsThreeState="False" Margin="10 0 30 12">
+                                Pop-up for Table Reservaion
+                            </CheckBox>
+                            <CheckBox x:Name="AlarmTableCheck"
+                                IsChecked="{Binding Path=Settings.TableReservationAlarm}"  
+                                IsThreeState="False" Margin="10 0 0 12">
+                                With Alarm
+                            </CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox x:Name="PopupFoodReservCheck"
+                                IsChecked="{Binding Path=Settings.FoodReservationPopup}"  
+                                IsThreeState="False" Margin="10 0 30 12">
+                                Pop-up for Food Reservaion
+                            </CheckBox>
+                            <CheckBox x:Name="AlarmFoodCheck"
+                                IsChecked="{Binding Path=Settings.FoodReservationAlarm}"  
+                                IsThreeState="False" Margin="10 0 0 12">
+                                With Alarm
+                            </CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox x:Name="PopupHotelReservCheck"
+                                IsChecked="{Binding Path=Settings.HotelReservationPopup}"  
+                                IsThreeState="False" Margin="10 0 30 12" >
+                                Pop-up for Hotel Reservaion
+                            </CheckBox>
+                            <CheckBox x:Name="AlarmHotelCheck"
+                                IsChecked="{Binding Path=Settings.HotelReservationAlarm}"  
+                                IsThreeState="False" Margin="10 0 0 12">
+                                With Alarm
+                            </CheckBox>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Messages" Padding="10" Margin="20">
+                    <StackPanel>
+                        <Expander 
+                            HorizontalAlignment="Stretch" 
+                            Header="Table: Welcome message to guests"
+                            IsExpanded="True" >
+                            <StackPanel Orientation="Vertical"
+                                TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
+                                Margin="24,0,24,16">
+                                <TextBox
+                                    TextWrapping="Wrap"
+                                    VerticalAlignment="Stretch"
+                                    Text="{Binding Path=Settings.TableWelcomeMessage}"
+                                    MinWidth="280"
+                                    AcceptsReturn="True"
+                                    VerticalScrollBarVisibility="Auto"
+                                    SpellCheck.IsEnabled="True"
+                                    materialDesign:HintAssist.Hint="Welcome"
+                                    Height="80">
+                                </TextBox>
+                            </StackPanel>
+                        </Expander>
+                        <Border
+                            Background="{DynamicResource MaterialDesignDivider}"
+                            Height="1"
+                            HorizontalAlignment="Stretch"
+                            SnapsToDevicePixels="True" />
+                        <!-- -->
+                        <Expander HorizontalAlignment="Stretch" Header="Food: Enjoy your meal text">
+                            <StackPanel Orientation="Vertical"
+                                TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
+                                Margin="24,0,24,16">
+                                <TextBox
+                                    TextWrapping="Wrap"
+                                    VerticalAlignment="Stretch"
+                                    Text="{Binding Path=Settings.FoodEnjoyMessage}"
+                                    MinWidth="280"
+                                    AcceptsReturn="True"
+                                    VerticalScrollBarVisibility="Auto"
+                                    SpellCheck.IsEnabled="True"
+                                    materialDesign:HintAssist.Hint="Enjoy your meal text"
+                                    Height="80">
+                                </TextBox>
+                            </StackPanel>
+                        </Expander>
+                        <Border
+                            Background="{DynamicResource MaterialDesignDivider}"
+                            Height="1"
+                            HorizontalAlignment="Stretch"
+                            SnapsToDevicePixels="True" />
+                        <!-- -->
+                        <Expander HorizontalAlignment="Stretch" Header="Room: Welcome to our hotel">
+                            <StackPanel Orientation="Vertical"
+                                TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
+                                Margin="24,0,24,16">
+                                <TextBox
+                                    TextWrapping="Wrap"
+                                    VerticalAlignment="Stretch"
+                                    Text="{Binding Path=Settings.RoomBookingMessage}"
+                                    MinWidth="280"
+                                    AcceptsReturn="True"
+                                    VerticalScrollBarVisibility="Auto"
+                                    SpellCheck.IsEnabled="True"
+                                    materialDesign:HintAssist.Hint="Welcome to our hotel"
+                                    Height="80">
+                                </TextBox>
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        
+        </ScrollViewer>
+    </Grid>
+</Window>
