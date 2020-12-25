@@ -34,14 +34,13 @@
                             <TextBox
                                 Name="ServerAddress"
                                 materialDesign:HintAssist.Hint="Joomla Server"
+                                Text="{Binding Path=Settings.JoomlaServer}"
                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                 VerticalAlignment="Center"  Margin="0, 0, 0, 20"/>
                             <ComboBox
-                                materialDesign:HintAssist.Hint="Printer (Reservation)" Margin="0, 0, 0, 20">
-                                <ComboBoxItem>Fax</ComboBoxItem>
-                                <ComboBoxItem>Microsoft Print To PDF</ComboBoxItem>
-                                <ComboBoxItem>Microsoft XPS Document Writer</ComboBoxItem>
-                                <ComboBoxItem>OneNote for Windows 10</ComboBoxItem>
+                                materialDesign:HintAssist.Hint="Printer (Reservation)" Margin="0, 0, 0, 20"
+                                ItemsSource="{Binding Printers.PrinterNames, Mode=OneWay}"
+                                SelectedItem="{Binding Settings.TableReservationPrinterName}" >
                             </ComboBox>
                         </StackPanel>
                     </GroupBox>

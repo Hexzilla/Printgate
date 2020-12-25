@@ -17,6 +17,8 @@ using System.Windows.Shapes;
 using System.Printing;
 using Printgate.ViewModel;
 using System.ComponentModel;
+using System.IO;
+using System.Text.Json;
 
 namespace Printgate
 {
@@ -74,9 +76,9 @@ namespace Printgate
             PrinterList.Children.Add(comboBox);
         }
 
-        private void SaveButton_Click()
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-
+            viewModel.SaveSettings();
         }
 
         private void OnPrinterListChanged(object sender, PropertyChangedEventArgs e)

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 
 namespace Printgate.Model
@@ -10,7 +12,8 @@ namespace Printgate.Model
         public string JoomlaServer { get; set; }
         public string TableReservationPrinterName { get; set; }
 
-        public ObservableCollection<string> _takeAwayPrinters = new ObservableCollection<string>();
+        private ObservableCollection<string> _takeAwayPrinters = new ObservableCollection<string>();
+
         public ObservableCollection<string> TakeAwayPrinters
         {
             get { return _takeAwayPrinters; }
@@ -40,7 +43,7 @@ namespace Printgate.Model
 
         public GateSettings()
         {
-            JoomlaServer = "http://localhost/site-src";
+            /*JoomlaServer = "http://localhost/site-src";
             ExportXml = true;
             AlarmNoConnection = true;
             HotelReservationPopup = true;
@@ -48,7 +51,7 @@ namespace Printgate.Model
             TableWelcomeMessage = "Hello Boys!";
 
             TakeAwayPrinters.Add("Fax");
-            TakeAwayPrinters.Add("Fax");
+            TakeAwayPrinters.Add("Fax");*/
         }
 
         public int AddTakeAwayPrinter(int index)
