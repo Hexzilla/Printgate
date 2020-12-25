@@ -1,14 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace Printgate.Model
 {
-    public class GateSettings
+    public class GateSettings : BaseModel
     {
         public string JoomlaServer { get; set; }
         public string TableReservationPrinterName { get; set; }
-        public List<string> TakeAwayPrinters{ get; set; }
+
+        public ObservableCollection<string> _takeAwayPrinters = new ObservableCollection<string>();
+        public ObservableCollection<string> TakeAwayPrinters
+        {
+            get { return _takeAwayPrinters; }
+            set
+            {
+                _takeAwayPrinters = value;
+                NotifyPropertyChanged("TakeAwayPrinters");
+            }
+        }
+
         public string BeautifulPrinterName { get; set; }
 
         public bool ExportXml { get; set; }
@@ -34,6 +46,22 @@ namespace Printgate.Model
             HotelReservationPopup = true;
             HotelReservationAlarm = true;
             TableWelcomeMessage = "Hello Boys!";
+
+            TakeAwayPrinters.Add("Fax");
+            TakeAwayPrinters.Add("Fax");
+        }
+
+        public int AddTakeAwayPrinter(int index)
+        {
+            if (TakeAwayPrinters.Count <= index)
+            {
+                TakeAwayPrinters.Add("");
+                return TakeAwayPrinters.Count - 1;
+            }
+            else
+            {
+                return index;
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,6 +14,10 @@ namespace Printgate.Model
     {
         private GateSettings settings;
 
+        private long maxTableReservationId = 0;
+
+        private long maxTakeAwayReservationId = 0;
+
         public Gate(GateSettings settings)
         {
             this.settings = settings;
@@ -20,12 +25,22 @@ namespace Printgate.Model
 
         private string GetServerUrl()
         {
-            return string.Format("{0}/index.php?option=com_api&app=vikrestaurants&resource=reservation&format=raw", settings.JoomlaServer);
+            return string.Format($"{settings.JoomlaServer}/index.php?option=com_api&app=vikrestaurants&resource=reservation&format=raw");
         }
 
-        private void GetTableDataFromServer()
+        private string GenerateUrl(string id="", string action="", string type="", string message="")
         {
-            var url = GetServerUrl() + "&id=" + maxTableReservationId + "&type=restaurant";
+            return GetServerUrl() + "&id=" + id + "&action=" + action + "&type=" + type + "&message=" + message;
+        }
+        private string GetDataTimeFromTimeStamp(double timestamp)
+        {
+            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return origin.AddSeconds(timestamp).ToString();
+        }
+
+        public void GetTableDataFromServer(ObservableCollection<TableReservation> mTableReservations)
+        {
+            var url = GenerateUrl(maxTableReservationId.ToString(), "", "restaurnat");
             var data = GetDataFromServer(url);
             if (data != null && data.Count() > 0)
             {
@@ -42,7 +57,7 @@ namespace Printgate.Model
             }
         }
 
-        private void GetTakeAwayDataFromServer()
+        public void GetTakeAwayDataFromServer(ObservableCollection<TakeAwayReservation> mTakeAwayReservations)
         {
             var url = GetServerUrl() + "&id=" + maxTakeAwayReservationId + "&type=takeaway";
             var data = GetDataFromServer(url);
@@ -62,26 +77,26 @@ namespace Printgate.Model
         }
         public async void SetTableReservationToServer(string url, TableReservation item, bool get = false)
         {
-            BeforeAsync();
+            //BeforeAsync();
             var result = await Task.Run(() =>
             {
                 return GetDataFromServer(url, get);
             });
             Console.WriteLine(result["success"]);
-            mTableReservations.Remove(item);
-            AfterAsync();
+            //mTableReservations.Remove(item);
+            //AfterAsync();
         }
 
         public async void SetTakeAwayReservationToServer(string url, TakeAwayReservation item, bool get = false)
         {
-            BeforeAsync();
+            //BeforeAsync();
             var result = await Task.Run(() =>
             {
                 return GetDataFromServer(url, get);
             });
             Console.WriteLine(result["success"].ToString());
-            mTakeAwayReservations.Remove(item);
-            AfterAsync();
+            //mTakeAwayReservations.Remove(item);
+            //AfterAsync();
         }
 
         private JToken GetDataFromServer(string url, bool get = true)
@@ -124,6 +139,18 @@ namespace Printgate.Model
             response.Close();
 
             return result;
+        }
+
+        internal void SendTableDataToServer(TableReservation item, string action)
+        {
+            var url = GenerateUrl(item.id.ToString(), action, "restaurant", settings.TableWelcomeMessage);
+            SetTableReservationToServer(url, item);
+        }
+
+        internal void SendTakeAwayDataToServer(TakeAwayReservation item, string action)
+        {
+            var url = GenerateUrl(item.id.ToString(), action, "takeaway", settings.FoodEnjoyMessage);
+            SetTakeAwayReservationToServer(url, item);
         }
     }
 }

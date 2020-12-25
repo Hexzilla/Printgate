@@ -19,6 +19,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Printgate.ViewModel;
 
 namespace Printgate
 {
@@ -31,40 +32,22 @@ namespace Printgate
 
         ObservableCollection<TableReservation> mTableReservations = new ObservableCollection<TableReservation>();
         ObservableCollection<TakeAwayReservation> mTakeAwayReservations = new ObservableCollection<TakeAwayReservation>();
-        long maxTableReservationId = 0;
-        long maxTakeAwayReservationId = 0;
-        string url;
-        string tableWelcomeMessage;
-        string takeawayWelcomeMessage;
-
 
         public ReservationView()
         {
             InitializeComponent();
             ProgressBar.Visibility = Visibility.Hidden;
 
-            SetTableWelcomeMessage();
-            SetTakeAwayWelcomeMessage();
-            
-            //Set data to list view
-            //GetTableDataFromServer();
+            gate.GetTableDataFromServer(mTableReservations);
             TableReservationListView.ItemsSource = mTableReservations;
 
-            //GetTakeAwayDataFromServer();
+            gate.GetTakeAwayDataFromServer(mTakeAwayReservations);
             TakeAwayReservationListView.ItemsSource = mTakeAwayReservations;
         }
+
         public void SetGate(Gate gate)
         {
             this.gate = gate;
-        }
-
-        private void SetTableWelcomeMessage()
-        {
-            tableWelcomeMessage = "welcome!";
-        }
-        private void SetTakeAwayWelcomeMessage()
-        {
-            takeawayWelcomeMessage = "welcome!";
         }
 
         private void BeforeAsync()
@@ -90,12 +73,6 @@ namespace Printgate
             TableWelcomeButton.IsEnabled = true;
         }
 
-        private string GetDataTimeFromTimeStamp(double timestamp)
-        {
-            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-            return origin.AddSeconds(timestamp).ToString();
-        }
-
         private TableReservation SelectedTableReservationItemId()
         {
             TableReservation item;
@@ -112,15 +89,13 @@ namespace Printgate
             return item;
         }
 
-
         //Table reservation
         private void TableConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             var item = SelectedTableReservationItemId();
             if (item != null)
             { 
-                url = url + "&id=" + item.id + "&action=confirm" + "&type=restaurant";
-                SetTableReservationToServer(url, item);
+                gate.SendTableDataToServer(item, "confirm");
             }
         }
 
@@ -129,8 +104,7 @@ namespace Printgate
             var item = SelectedTableReservationItemId();
             if (item != null)
             {
-                url = url + "&id=" + item.id + "&action=reject" + "&type=restaurant";
-                SetTableReservationToServer(url, item);
+                gate.SendTableDataToServer(item, "reject");
             }
         }
 
@@ -139,8 +113,7 @@ namespace Printgate
             var item = SelectedTableReservationItemId();
             if (item != null)
             {
-                url = url + "&id=" + item.id + "&action=welcome" + "&type=restaurant" + "&message=" + tableWelcomeMessage;
-                SetTableReservationToServer(url, item);
+                gate.SendTableDataToServer(item, "welcome");
             }
         }
 
@@ -165,8 +138,7 @@ namespace Printgate
             var item = SelectedTakeAwayReservationItemId();
             if (item != null)
             {
-                url = url + "&id=" + item.id + "&action=confirm" + "&type=takeaway";
-                SetTakeAwayReservationToServer(url, item);
+                gate.SendTakeAwayDataToServer(item, "confirm");
             }
         }
 
@@ -175,8 +147,7 @@ namespace Printgate
             var item = SelectedTakeAwayReservationItemId();
             if (item != null)
             {
-                url = url + "&id=" + item.id + "&action=reject" + "&type=takeaway";
-                SetTakeAwayReservationToServer(url, item);
+                gate.SendTakeAwayDataToServer(item, "reject");
             }
         }
 
@@ -185,8 +156,7 @@ namespace Printgate
             var item = SelectedTakeAwayReservationItemId();
             if (item != null)
             {
-                url = url + "&id=" + item.id + "&action=welcome" + "&type=takeaway" + "&message=" + takeawayWelcomeMessage;
-                SetTakeAwayReservationToServer(url, item);
+                gate.SendTakeAwayDataToServer(item, "welcome");
             }
         }
 

@@ -12,7 +12,7 @@
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        xmlns:local="clr-namespace:WpfApp1"
+        xmlns:local="clr-namespace:Printgate"
         mc:Ignorable="d"
         Title="Reservation" Width="1000" Height="600" >
     <Window.Resources>

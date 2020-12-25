@@ -13,7 +13,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="Printgate" Width="1200" Height="800" >
+        Title="Printgate" Width="1200" Height="680" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -155,10 +155,7 @@
                 </GroupBox>
                 <GroupBox Header="Messages" Padding="10" Margin="20">
                     <StackPanel>
-                        <Expander 
-                            HorizontalAlignment="Stretch" 
-                            Header="Table: Welcome message to guests"
-                            IsExpanded="True" >
+                        <Expander HorizontalAlignment="Stretch" Header="Table: Welcome message to guests" IsExpanded="True" >
                             <StackPanel Orientation="Vertical"
                                 TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
                                 Margin="24,0,24,16">
@@ -181,7 +178,7 @@
                             HorizontalAlignment="Stretch"
                             SnapsToDevicePixels="True" />
                         <!-- -->
-                        <Expander HorizontalAlignment="Stretch" Header="Food: Enjoy your meal text">
+                        <Expander HorizontalAlignment="Stretch" Header="Food: Enjoy your meal text" IsExpanded="True">
                             <StackPanel Orientation="Vertical"
                                 TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
                                 Margin="24,0,24,16">
@@ -204,7 +201,7 @@
                             HorizontalAlignment="Stretch"
                             SnapsToDevicePixels="True" />
                         <!-- -->
-                        <Expander HorizontalAlignment="Stretch" Header="Room: Welcome to our hotel">
+                        <Expander HorizontalAlignment="Stretch" Header="Room: Welcome to our hotel" IsExpanded="True">
                             <StackPanel Orientation="Vertical"
                                 TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
                                 Margin="24,0,24,16">
@@ -221,6 +218,15 @@
                                 </TextBox>
                             </StackPanel>
                         </Expander>
+                        <Button
+                            Style="{StaticResource MaterialDesignFlatAccentBgButton}"
+                            Width="100"
+                            ToolTip="Resource name: MaterialDesignFlatAccentBgButton"
+                            materialDesign:RippleAssist.IsDisabled="True"
+                            Click="SaveButton_Click"
+                            Margin="0, 22, 0, 16" >
+                            Save
+                        </Button>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>

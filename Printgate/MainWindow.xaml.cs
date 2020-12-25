@@ -15,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Printing;
+using Printgate.ViewModel;
+using System.ComponentModel;
 
 namespace Printgate
 {
@@ -23,11 +25,15 @@ namespace Printgate
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainWindowViewModel viewModel = new MainWindowViewModel();
+        private MainWindowViewModel viewModel;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            viewModel = new MainWindowViewModel();
+            viewModel.Printers.PropertyChanged += OnPrinterListChanged;
+
             DataContext = viewModel;
 
             //Task.Run((Action)MyFunction);
@@ -44,10 +50,50 @@ namespace Printgate
 
         private void AddPrinter()
         {
+            int printerIndex = PrinterList.Children.Count;
+
+            // Create New Combobox
             var comboBox = new ComboBox();
             comboBox.Margin = new Thickness(0, 0, 0, 16);
-            comboBox.SetBinding(ComboBox.ItemsSourceProperty, new Binding("PrinterNames") { Source = viewModel });
+
+            // Add Selected Value Data Source
+            int selectedPrinterIndex = viewModel.Settings.AddTakeAwayPrinter(printerIndex);
+            var bindPath = $"Settings.TakeAwayPrinters[{selectedPrinterIndex}]";
+            var bindingSelectedPrinter = new Binding(bindPath) { Source = viewModel };
+            comboBox.SetBinding(ComboBox.SelectedValueProperty, bindingSelectedPrinter);
+
+            var bindingNames = new Binding("Printers.PrinterNames") { Source = viewModel };
+            comboBox.SetBinding(ComboBox.ItemsSourceProperty, bindingNames);
+            
+            comboBox.DropDownOpened += new EventHandler((object sender, EventArgs e) =>
+            {
+                viewModel.Printers.UpdatePrinterList();
+            });
+
+            comboBox.Tag = printerIndex;
             PrinterList.Children.Add(comboBox);
+        }
+
+        private void SaveButton_Click()
+        {
+
+        }
+
+        private void OnPrinterListChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "PrinterList")
+            {
+                /*foreach (var item in PrinterList.Children)
+                {
+                    var comboBox = item as ComboBox;
+                    var selectedValue = (string)comboBox.SelectedValue;
+                    if (selectedValue != null)
+                    {
+                        var printerName = viewModel.Printers.PrinterNames.FirstOrDefault(it => it == selectedValue);
+                        comboBox.SelectedValue = printerName;
+                    }
+                }*/
+            }
         }
     }
 }
