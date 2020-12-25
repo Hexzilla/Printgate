@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,41 +14,92 @@ using System.Diagnostics;
 using Printgate.Model;
 using System.IO;
 using Newtonsoft.Json;
+using System.Windows.Data;
 
 namespace Printgate.ViewModel
 {
     class MainWindowViewModel
     {
+        public readonly Gate gate;
+
         public Printers Printers { get; set; } = new Printers();
+
+        public ObservableCollection<FoodCategory> FoodCategories { get; set; }
 
         public GateSettings Settings { get; set; }
 
-        private readonly Gate gate;
+        public CollectionView PrinterList { get; set; }
 
         public MainWindowViewModel()
         {
+            gate = new Gate(Settings);
+
             Settings = LoadSettings() ?? new GateSettings();
-            this.gate = new Gate(Settings);
+
+            FoodCategories = new ObservableCollection<FoodCategory>();
+            FoodCategories.Add(new FoodCategory(1, "Pizza and Spagetti "));
+            FoodCategories.Add(new FoodCategory(2, "Pasta"));
+            FoodCategories.Add(new FoodCategory(3, "Printgate"));
         }
 
-        internal void SaveSettings()
+        internal void SaveSettings(UIElementCollection printerCollection)
         {
-            // serialize JSON directly to a file
-            using (StreamWriter file = File.CreateText(@"settings.json"))
+            Settings.TakeAwayPrinters.Clear();
+            foreach (var item in printerCollection)
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(file, Settings);
+                var printer = new TakeAwayPrinter();
+
+                var grid = item as Grid;
+                var cbCategory = grid.Children[0] as ComboBox;
+                var category = cbCategory.SelectedValue as FoodCategory;
+                printer.CategoryId = category.ID;
+                printer.CategoryName = category.Name;
+
+                var cbPrinters = grid.Children[1] as ComboBox;
+                printer.PrinterName = cbPrinters.SelectedValue as String;
+
+                Settings.TakeAwayPrinters.Add(printer);
+            }
+
+            try
+            {
+                // serialize JSON directly to a file
+                using (StreamWriter file = File.CreateText(@"settings.json"))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Formatting = Formatting.Indented;
+                    serializer.Serialize(file, Settings);
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
             }
         }
 
         internal GateSettings LoadSettings()
         {
-            // deserialize JSON directly from a file
-            using (StreamReader file = File.OpenText(@"settings.json"))
+            string fileName = @"settings.json";
+
+            if (!File.Exists(fileName))
+                return null;
+
+            try
             {
-                JsonSerializer serializer = new JsonSerializer();
-                return (GateSettings)serializer.Deserialize(file, typeof(GateSettings));
+                // Deserialize JSON directly from a file
+                using (StreamReader file = File.OpenText(fileName))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    return (GateSettings)serializer.Deserialize(file, typeof(GateSettings));
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                return null;
             }
         }
+
+
     }
 }

@@ -21,33 +21,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Printgate.ViewModel;
 
-namespace Printgate
+namespace Printgate.View
 {
     /// <summary>
     /// Interaction logic for ReservationView.xaml
     /// </summary>
     public partial class ReservationView : Window
     {
-        private Gate gate;
-
-        ObservableCollection<TableReservation> mTableReservations = new ObservableCollection<TableReservation>();
-        ObservableCollection<TakeAwayReservation> mTakeAwayReservations = new ObservableCollection<TakeAwayReservation>();
-
+        private ReservationViewModel viewModel = new ReservationViewModel();
         public ReservationView()
         {
             InitializeComponent();
+            DataContext = viewModel;
             ProgressBar.Visibility = Visibility.Hidden;
-
-            gate.GetTableDataFromServer(mTableReservations);
-            TableReservationListView.ItemsSource = mTableReservations;
-
-            gate.GetTakeAwayDataFromServer(mTakeAwayReservations);
-            TakeAwayReservationListView.ItemsSource = mTakeAwayReservations;
-        }
-
-        public void SetGate(Gate gate)
-        {
-            this.gate = gate;
         }
 
         private void BeforeAsync()
@@ -90,30 +76,36 @@ namespace Printgate
         }
 
         //Table reservation
-        private void TableConfirmButton_Click(object sender, RoutedEventArgs e)
-        {
-            var item = SelectedTableReservationItemId();
-            if (item != null)
-            { 
-                gate.SendTableDataToServer(item, "confirm");
-            }
-        }
-
-        private void TableRejectButton_Click(object sender, RoutedEventArgs e)
+        private async void TableConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             var item = SelectedTableReservationItemId();
             if (item != null)
             {
-                gate.SendTableDataToServer(item, "reject");
+                BeforeAsync();
+                await viewModel.SendTableDataToServer(item, "confirm");
+                AfterAsync();
             }
         }
 
-        private void TableWelcomeButton_Click(object sender, RoutedEventArgs e)
+        private async void TableRejectButton_Click(object sender, RoutedEventArgs e)
         {
             var item = SelectedTableReservationItemId();
             if (item != null)
             {
-                gate.SendTableDataToServer(item, "welcome");
+                BeforeAsync();
+                await viewModel.SendTableDataToServer(item, "reject");
+                AfterAsync();
+            }
+        }
+
+        private async void TableWelcomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = SelectedTableReservationItemId();
+            if (item != null)
+            {
+                BeforeAsync();
+                await viewModel.SendTableDataToServer(item, "welcome");
+                AfterAsync();
             }
         }
 
@@ -133,30 +125,36 @@ namespace Printgate
             return item;
         }
         //Take away reservation
-        private void TakeAwayConfirmButton_Click(object sender, RoutedEventArgs e)
+        private async void TakeAwayConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             var item = SelectedTakeAwayReservationItemId();
             if (item != null)
             {
-                gate.SendTakeAwayDataToServer(item, "confirm");
+                BeforeAsync();
+                await viewModel.SendTakeAwayDataToServer(item, "confirm");
+                AfterAsync();
             }
         }
 
-        private void TakeAwayRejectButton_Click(object sender, RoutedEventArgs e)
+        private async void TakeAwayRejectButton_Click(object sender, RoutedEventArgs e)
         {
             var item = SelectedTakeAwayReservationItemId();
             if (item != null)
             {
-                gate.SendTakeAwayDataToServer(item, "reject");
+                BeforeAsync();
+                await viewModel.SendTakeAwayDataToServer(item, "reject");
+                AfterAsync();
             }
         }
 
-        private void TakeAwayWelcomeButton_Click(object sender, RoutedEventArgs e)
+        private async void TakeAwayWelcomeButton_Click(object sender, RoutedEventArgs e)
         {
             var item = SelectedTakeAwayReservationItemId();
             if (item != null)
             {
-                gate.SendTakeAwayDataToServer(item, "welcome");
+                BeforeAsync();
+                await viewModel.SendTakeAwayDataToServer(item, "welcome");
+                AfterAsync();
             }
         }
 
