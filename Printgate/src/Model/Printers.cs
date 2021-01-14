@@ -6,41 +6,37 @@ using System.Linq;
 using System.Printing;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Xml;
 
 namespace Printgate.Model
 {
     public class Printers : BaseModel
     {
-        private ObservableCollection<string> _printerNames { get; set; }
+        private GateSettings settings;
 
-        public ObservableCollection<string> PrinterNames
+        public Printers(GateSettings settings)
         {
-            get { return _printerNames; }
-            set { _printerNames = value; NotifyPropertyChanged("PrinterList"); }
+            this.settings = settings;
         }
 
-        public Printers()
-        {
-            GetPrinterList();
-        }
-
-        public void GetPrinterList()
+        public static List<string> GetPrinterList()
         {
             var localPrintServer = new PrintServer();
             var printQueues = localPrintServer.GetPrintQueues(new[] { EnumeratedPrintQueueTypes.Local, EnumeratedPrintQueueTypes.Connections });
             var printerList = (from printer in printQueues select printer).ToList();
 
-            var resultItems = new ObservableCollection<string>();
+            var resultItems = new List<string>();
             foreach (var printer in printerList)
             {
                 resultItems.Add(printer.Name);
             }
-            PrinterNames = resultItems;
+            return resultItems;
         }
 
-        public void Print(string printerName)
+        public async Task<bool> Print(string printerName)
         {
             // Create a FlowDocument dynamically.  
             FlowDocument doc = CreateFlowDocument();
@@ -53,6 +49,7 @@ namespace Printgate.Model
             PrintDialog printDlg = new PrintDialog();
             printDlg.PrintQueue = new PrintQueue(new PrintServer(), printerName);
             printDlg.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
+            return true;
         }
         
         private FlowDocument CreateFlowDocument()
@@ -82,6 +79,45 @@ namespace Printgate.Model
             document.Blocks.Add(myParagraph);
             document.Blocks.Add(myList);
             return document;
+        }
+
+        public bool PrintXmlFile(string fileName, object data, Type type)
+        {
+            try
+            {
+                var writer = new System.Xml.Serialization.XmlSerializer(type);
+
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + $"//{fileName}";
+                System.IO.FileStream file = System.IO.File.Create(path);
+                writer.Serialize(file, data);
+                file.Close();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                return false;
+            }
+        }
+
+        public async Task<bool> PrintTableReservationData(TableReservationPrintData data)
+        {
+            string datetime = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fffffff");
+            string fileName = $"{datetime}-TableReservation.xml";
+            PrintXmlFile(fileName, data, typeof(TableReservationPrintData));
+
+            await Print(settings.TablePrinter);
+            await Print(settings.BeautifulPrinter);
+
+            return true;
+        }
+
+        public bool PrintTakeAwayReservationData(TakeAwayReservationPrintData data)
+        {
+            string datetime = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fffffff");
+            string fileName = $"{datetime}-TakeAwayReservation.xml";
+            PrintXmlFile(fileName, data, typeof(TakeAwayReservationPrintData));
+            return true;
         }
     }
 }

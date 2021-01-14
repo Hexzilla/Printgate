@@ -5,6 +5,14 @@ using System.Text;
 
 namespace Printgate.Model
 {
+    public class TableReservationCustomF
+    {
+        public string CUSTOMF_NAME { get; set; }
+        public string CUSTOMF_LNAME { get; set; }
+        public string CUSTOMF_EMAIL { get; set; }
+        public string Telefon { get; set; }
+    }
+
     public class TableReservation
     {
         public long id { get; set; }
@@ -13,8 +21,10 @@ namespace Printgate.Model
         public string purchaser_phone { get; set; }
         public string purchaser_mail { get; set; }
         public string status { get; set; }
+        public int need_notif { get; set; }
+        public string Name => purchaser_nominative;
 
-        public string Name => purchaser_nominative + "[" + purchaser_phone + "]";
+        public string Phone => purchaser_phone;
 
         public string Date => _gate.GetDataTimeFromTimeStamp(double.Parse(checkin_ts));
 
@@ -22,24 +32,16 @@ namespace Printgate.Model
 
         public string Status => status;
 
+        public string Print => need_notif == 2 ? "Yes" : "No";
+
+        public string custom_f { get; set; }
+
+        public TableReservationCustomF CustomF { get; set; }
+
         private Gate _gate;
         public TableReservation()
         {
             _gate = new Gate();
-        }
-    }
-    public class TableReservations
-    {
-        public TableReservations()
-        {
-            Items = new ObservableCollection<TableReservation>();
-        }
-
-        public ObservableCollection<TableReservation> Items { get; set; }
-
-        public void Add(TableReservation item)
-        {
-            Items.Add(item);
         }
     }
 }

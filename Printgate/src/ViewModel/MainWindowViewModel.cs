@@ -15,14 +15,21 @@ using Printgate.Model;
 using System.IO;
 using Newtonsoft.Json;
 using System.Windows.Data;
+using Printgate.View;
 
 namespace Printgate.ViewModel
 {
-    class MainWindowViewModel
+    public class MainWindowViewModel
     {
-        public readonly Gate gate;
+        private Printers Printers;
 
-        public Printers Printers { get; set; } = new Printers();
+        private ObservableCollection<string> _printerNames { get; set; }
+
+        public ObservableCollection<string> PrinterNames
+        {
+            get { return _printerNames; }
+            set { _printerNames = value; }
+        }
 
         public ObservableCollection<FoodCategory> FoodCategories { get; set; }
 
@@ -32,14 +39,19 @@ namespace Printgate.ViewModel
 
         public MainWindowViewModel()
         {
-            gate = new Gate(Settings);
-
             Settings = LoadSettings() ?? new GateSettings();
+            PrinterNames = new ObservableCollection<string>(Printers.GetPrinterList());
+            Printers = new Printers(Settings);
 
             FoodCategories = new ObservableCollection<FoodCategory>();
             FoodCategories.Add(new FoodCategory(1, "Pizza and Spagetti "));
             FoodCategories.Add(new FoodCategory(2, "Pasta"));
             FoodCategories.Add(new FoodCategory(3, "Printgate"));
+        }
+
+        public void UpdatePrinterList()
+        {
+            PrinterNames = new ObservableCollection<string>(Printers.GetPrinterList());
         }
 
         internal void SaveSettings(UIElementCollection printerCollection)
@@ -99,7 +111,5 @@ namespace Printgate.ViewModel
                 return null;
             }
         }
-
-
     }
 }

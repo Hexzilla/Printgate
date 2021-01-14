@@ -20,6 +20,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using Printgate.Model;
+using System.Media;
+using Winforms = System.Windows.Forms;
 
 namespace Printgate.View
 {
@@ -30,6 +32,10 @@ namespace Printgate.View
     {
         private MainWindowViewModel viewModel;
 
+        private ReservationView reservView;
+
+        private ReservationViewModel reservViewModel;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -39,15 +45,33 @@ namespace Printgate.View
             DataContext = viewModel;
 
             AddTakeAwayPrinters();
+            SetupSystemTrayIcon();
 
-            foreach (var item in CheckBoxGroup.Children)
+            SetCheckBoxStateEvent(CheckBoxGroup.Children);
+
+            reservViewModel = new ReservationViewModel(viewModel.Settings);
+            reservViewModel.PropertyChanged += ReservationItem_Changed;
+            reservViewModel.StartGate();
+        }
+
+        private void SetCheckBoxStateEvent(UIElementCollection collection)
+        {
+            foreach (var item in collection)
             {
                 if (item.GetType() == typeof(CheckBox))
                 {
                     (item as CheckBox).Checked += CheckBox_Changed;
                     (item as CheckBox).Unchecked += CheckBox_Changed;
                 }
+                if (item.GetType() == typeof(Grid))
+                {
+                    //SetCheckBoxStateEvent((item as Grid).Children);
+                }
             }
+
+            TableAlarmCheck.IsEnabled = viewModel.Settings.IsTablePopup;
+            TakeAlarmCheck.IsEnabled = viewModel.Settings.IsTakePopup;
+            RoomAlarmCheck.IsEnabled = viewModel.Settings.IsRoomPopup;
         }
 
         private void AddTakeAwayPrinters()
@@ -101,18 +125,36 @@ namespace Printgate.View
             // Create Printers Combobox
             var printers = new ComboBox();
             printers.Margin = new Thickness(10, 0, 0, 16);
-            printers.SetBinding(ComboBox.ItemsSourceProperty, new Binding("Printers.PrinterNames") { Source = viewModel });
+            printers.SetBinding(ComboBox.ItemsSourceProperty, new Binding("PrinterNames") { Source = viewModel });
             printers.SelectedIndex = 0;
             if (!string.IsNullOrEmpty(selectedPrinter))
                 printers.SelectedValue = selectedPrinter;
             printers.DropDownOpened += new EventHandler((object sender, EventArgs e) =>
             {
-                viewModel.Printers.GetPrinterList();
+                viewModel.UpdatePrinterList();
             });
             Grid.SetColumn(printers, 1);
             grid.Children.Add(printers);
 
             PrinterList.Children.Add(grid);
+        }
+
+        private void SetupSystemTrayIcon()
+        {
+            try
+            {
+                var icon = new Winforms.NotifyIcon();
+                icon.Icon = new System.Drawing.Icon("printer.ico");
+                icon.Visible = true;
+                icon.BalloonTipText = "Printgate";
+                icon.BalloonTipTitle = "Printgate";
+                icon.BalloonTipIcon = Winforms.ToolTipIcon.Info;
+                icon.ShowBalloonTip(1500);
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
         }
 
         private void SaveSettings()
@@ -135,14 +177,74 @@ namespace Printgate.View
             SaveSettings();
         }
 
-        private void CheckBox_Changed(object sender, RoutedEventArgs e)
+        private void CheckBox_Changed(object sender, EventArgs e)
         {
+            SaveSettings();
+        }
+
+        private void TablePopupCheck_Click(object sender, RoutedEventArgs e)
+        {
+            TableAlarmCheck.IsEnabled = (TablePopupCheck.IsChecked == true);
+            SaveSettings();
+        }
+
+        private void TakePopupCheck_Click(object sender, RoutedEventArgs e)
+        {
+            TakeAlarmCheck.IsEnabled = (TakePopupCheck.IsChecked == true);
+            SaveSettings();
+        }
+
+        private void RoomPopupCheck_Click(object sender, RoutedEventArgs e)
+        {
+            RoomAlarmCheck.IsEnabled = (RoomPopupCheck.IsChecked == true);
             SaveSettings();
         }
 
         private void TextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             SaveSettings();
+        }
+
+        private void ReservationItem_Changed(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "TableItems" && viewModel.Settings.IsTablePopup)
+            {
+                Dispatcher.Invoke(() => StartReservationWindow(viewModel.Settings.IsTableAlarm));
+            }
+            if (e.PropertyName == "TakeAwayItems" && viewModel.Settings.IsTakePopup)
+            {
+                Dispatcher.Invoke(() => StartReservationWindow(viewModel.Settings.IsTakeAlarm));
+            }
+            if (e.PropertyName == "RoomItems" && viewModel.Settings.IsRoomPopup)
+            {
+                Dispatcher.Invoke(() => StartReservationWindow(viewModel.Settings.IsRoomAlarm));
+            }
+        }
+
+        private void StartReservationWindow(bool alram)
+        {
+            if (alram)
+                Alram();
+
+            if (reservView == null)
+                reservView = new ReservationView(reservViewModel);
+
+            if (reservView.IsVisible == false)
+                reservView.Show();
+        }
+
+        private void Alram()
+        {
+            try
+            {
+                SoundPlayer player = new SoundPlayer();
+                player.SoundLocation = "bird.wav";
+                player.Play();
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
         }
     }
 }

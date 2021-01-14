@@ -22,8 +22,8 @@ namespace Printgate.Model
         public bool IsFullAddress { get; set; }
         public bool IsTablePopup { get; set; }
         public bool IsTableAlarm { get; set; }
-        public bool IsFoodPopup { get; set; }
-        public bool IsFoodAlarm { get; set; }
+        public bool IsTakePopup { get; set; }
+        public bool IsTakeAlarm { get; set; }
         public bool IsRoomPopup { get; set; }
         public bool IsRoomAlarm { get; set; }
 

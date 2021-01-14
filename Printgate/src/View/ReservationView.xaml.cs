@@ -28,12 +28,20 @@ namespace Printgate.View
     /// </summary>
     public partial class ReservationView : Window
     {
-        private ReservationViewModel viewModel = new ReservationViewModel();
+        private ReservationViewModel viewModel;
+
         public ReservationView()
         {
             InitializeComponent();
+        }
+
+        public ReservationView(ReservationViewModel viewModel)
+        {
+            InitializeComponent();
+            this.viewModel = viewModel;
             DataContext = viewModel;
             ProgressBar.Visibility = Visibility.Hidden;
+
         }
 
         private void BeforeAsync()
@@ -158,5 +166,60 @@ namespace Printgate.View
             }
         }
 
+        private RoomReservation SelectedRoomReservationItemId()
+        {
+            RoomReservation item;
+            try
+            {
+                item = RoomReservationListView.SelectedItems[0] as RoomReservation;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message.ToString());
+                return null;
+            }
+
+            return item;
+        }
+
+        //Room reservation
+        private async void RoomConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = SelectedRoomReservationItemId();
+            if (item != null)
+            {
+                BeforeAsync();
+                await viewModel.SendRoomDataToServer(item, "confirm");
+                AfterAsync();
+            }
+        }
+
+        private async void RoomRejectButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = SelectedRoomReservationItemId();
+            if (item != null)
+            {
+                BeforeAsync();
+                await viewModel.SendRoomDataToServer(item, "reject");
+                AfterAsync();
+            }
+        }
+
+        private async void RoomWelcomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = SelectedRoomReservationItemId();
+            if (item != null)
+            {
+                BeforeAsync();
+                await viewModel.SendRoomDataToServer(item, "welcome");
+                AfterAsync();
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.Visibility = Visibility.Hidden;
+        }
     }
 }

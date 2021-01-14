@@ -29,7 +29,11 @@
             </Grid.ColumnDefinitions>
             <StackPanel  Grid.Column="0" Margin="20,0,0,0">
                 <StackPanel>
-                    <GroupBox Header="Server" Padding="10" Margin="20">
+                    <GroupBox Header="Server" Padding="10" Margin="20"
+                      Style="{DynamicResource MaterialDesignGroupBox}"
+                      materialDesign:ColorZoneAssist.Mode="Custom"
+                      materialDesign:ColorZoneAssist.Background="Black"
+                      materialDesign:ColorZoneAssist.Foreground="White">
                         <StackPanel Orientation="Vertical">
                             <TextBox
                                 Name="ServerAddress"
@@ -48,7 +52,11 @@
                 </StackPanel>
                 <StackPanel Margin="0,18,0,0">
                     <Expander HorizontalAlignment="Stretch" Header="Take Away" IsExpanded="True">
-                        <GroupBox Header="" Margin="16" Padding="22,0,22,0">
+                        <GroupBox Header="" Margin="16" Padding="22,0,22,0"
+                          Style="{DynamicResource MaterialDesignGroupBox}"
+                          materialDesign:ColorZoneAssist.Mode="Custom"
+                          materialDesign:ColorZoneAssist.Background="Black"
+                          materialDesign:ColorZoneAssist.Foreground="White">
                             <StackPanel Orientation="Vertical" Margin="0,16,0,0">
                                 <StackPanel Name="PrinterList" Orientation="Vertical">
                                     <!--
@@ -75,23 +83,29 @@
                     </Expander>
                 </StackPanel>
                 <StackPanel Margin="0,18,0,40">
-                    <Expander HorizontalAlignment="Stretch" Header="Beautiful Printer" IsExpanded="True">
-                        <GroupBox Header="" Margin="16" Padding="22,0,22,0">
-                            <StackPanel Orientation="Vertical" Margin="0,16,0,0">
-                                <ComboBox
-                                    materialDesign:HintAssist.Hint="Printer (Take Away)" 
-                                    Margin="0, 0, 0, 16"
-                                    ItemsSource="{Binding Printers.PrinterNames}"
-                                    SelectedItem="{Binding Settings.BeautifulPrinter}" 
-                                    SelectionChanged="ComboBox_SelectionChanged" >
-                                </ComboBox>
-                            </StackPanel>
-                        </GroupBox>
-                    </Expander>
+                    <GroupBox Header="Server" Padding="10" Margin="20"
+                            Style="{DynamicResource MaterialDesignGroupBox}"
+                            materialDesign:ColorZoneAssist.Mode="Custom"
+                            materialDesign:ColorZoneAssist.Background="Black"
+                            materialDesign:ColorZoneAssist.Foreground="White">
+                        <StackPanel Orientation="Vertical" Margin="0,16,0,0">
+                            <ComboBox
+                                materialDesign:HintAssist.Hint="Printer (Take Away)" 
+                                Margin="0, 0, 0, 16"
+                                ItemsSource="{Binding Printers.PrinterNames}"
+                                SelectedItem="{Binding Settings.BeautifulPrinter}" 
+                                SelectionChanged="ComboBox_SelectionChanged" >
+                            </ComboBox>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Column="1">
-                <GroupBox Header="Options" Padding="10" Margin="20">
+                <GroupBox Header="Options" Padding="10" Margin="20"
+                      Style="{DynamicResource MaterialDesignGroupBox}"
+                      materialDesign:ColorZoneAssist.Mode="Custom"
+                      materialDesign:ColorZoneAssist.Background="Black"
+                      materialDesign:ColorZoneAssist.Foreground="White">
                     <StackPanel Name="CheckBoxGroup">
                         <CheckBox x:Name="XmlExportCheck"
                             IsChecked="{Binding Path=Settings.IsExportXml}"
@@ -113,45 +127,67 @@
                             IsThreeState="False" Margin="10 0 0 32">
                             Full address and map for delivery
                         </CheckBox>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <CheckBox x:Name="PopupTableReservCheck"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*" />
+                                <ColumnDefinition Width="2.0*" />
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0"
+                                Name="TablePopupCheck"
                                 IsChecked="{Binding Path=Settings.IsTablePopup}"  
-                                IsThreeState="False" Margin="10 0 30 12">
+                                IsThreeState="False" Margin="10 0 30 12" Click="TablePopupCheck_Click">
                                 Pop-up for Table Reservaion
                             </CheckBox>
-                            <CheckBox x:Name="AlarmTableCheck"
+                            <CheckBox Grid.Column="1"
+                                Name="TableAlarmCheck"
                                 IsChecked="{Binding Path=Settings.IsTableAlarm}"  
-                                IsThreeState="False" Margin="10 0 0 12">
+                                IsThreeState="False" Margin="10 0 0 12" Click="CheckBox_Changed">
                                 With Alarm
                             </CheckBox>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox x:Name="PopupFoodCheck"
-                                IsChecked="{Binding Path=Settings.IsFoodPopup}"  
-                                IsThreeState="False" Margin="10 0 30 12">
-                                Pop-up for Food Reservaion
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*" />
+                                <ColumnDefinition Width="2.0*" />
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0"
+                                Name="TakePopupCheck"
+                                IsChecked="{Binding Path=Settings.IsTakePopup}"  
+                                IsThreeState="False" Margin="10 0 30 12" Click="TakePopupCheck_Click">
+                                Pop-up for Table Reservaion
                             </CheckBox>
-                            <CheckBox x:Name="AlarmFoodCheck"
-                                IsChecked="{Binding Path=Settings.IsFoodAlarm}"  
-                                IsThreeState="False" Margin="10 0 0 12">
+                            <CheckBox Grid.Column="1"
+                                Name="TakeAlarmCheck"
+                                IsChecked="{Binding Path=Settings.IsTakeAlarm}"  
+                                IsThreeState="False" Margin="10 0 0 12" Click="CheckBox_Changed">
                                 With Alarm
                             </CheckBox>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox x:Name="PopupHotelReservCheck"
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*" />
+                                <ColumnDefinition Width="2.0*" />
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0"
+                                Name="RoomPopupCheck"
                                 IsChecked="{Binding Path=Settings.IsRoomPopup}"  
-                                IsThreeState="False" Margin="10 0 30 12" >
-                                Pop-up for Hotel Reservaion
+                                IsThreeState="False" Margin="10 0 30 12" Click="RoomPopupCheck_Click">
+                                Pop-up for Table Reservaion
                             </CheckBox>
-                            <CheckBox x:Name="AlarmHotelCheck"
+                            <CheckBox Grid.Column="1"
+                                Name="RoomAlarmCheck"
                                 IsChecked="{Binding Path=Settings.IsRoomAlarm}"  
-                                IsThreeState="False" Margin="10 0 0 12">
+                                IsThreeState="False" Margin="10 0 0 12" Click="CheckBox_Changed">
                                 With Alarm
                             </CheckBox>
-                        </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Messages" Padding="10" Margin="20">
+                <GroupBox Header="Messages" Padding="10" Margin="20"
+                      Style="{DynamicResource MaterialDesignGroupBox}"
+                      materialDesign:ColorZoneAssist.Mode="Custom"
+                      materialDesign:ColorZoneAssist.Background="Black"
+                      materialDesign:ColorZoneAssist.Foreground="White">
                     <StackPanel>
                         <Expander HorizontalAlignment="Stretch" Header="Table: Welcome message to guests" IsExpanded="True" >
                             <StackPanel Orientation="Vertical"

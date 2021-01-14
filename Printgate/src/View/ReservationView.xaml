@@ -14,7 +14,7 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:Printgate.ViewModel"
         mc:Ignorable="d"
-        Title="Reservation" Width="1000" Height="600" >
+        Title="Reservation" Width="1000" Height="600" Closing="Window_Closing" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -37,24 +37,27 @@
                             <GridView>
                                 <GridViewColumn 
                                     DisplayMemberBinding="{Binding Date}"
-                                    Header="Time/Date" Width="200"/>
+                                    Header="Time/Date" Width="150"/>
                                 <GridViewColumn
                                     DisplayMemberBinding="{Binding Name}"
-                                    Header="Name/Phone" Width="220"/>
+                                    Header="Name" Width="150"/>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Phone}"
+                                    Header="Phone" Width="150"/>
                                 <GridViewColumn
                                     DisplayMemberBinding="{Binding Email}"
                                     Header="Email" Width="200" />
                                 <GridViewColumn
                                     DisplayMemberBinding="{Binding Status}"
-                                    Header="Status" Width="140" />
+                                    Header="Status" Width="100" />
                                 <GridViewColumn
                                     DisplayMemberBinding="{Binding Print}"
-                                    Header="Print" Width="120"  />
+                                    Header="Print" Width="100"  />
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 15 0 15">
                     <Button
                         Style="{StaticResource MaterialDesignFlatMidBgButton}"
                         Width="90"
@@ -94,24 +97,27 @@
                             <GridView>
                                 <GridViewColumn 
                                     DisplayMemberBinding="{Binding Date}"
-                                    Header="Time/Date" Width="200"/>
+                                    Header="Time/Date" Width="150"/>
                                 <GridViewColumn
                                     DisplayMemberBinding="{Binding Name}"
-                                    Header="Name/Phone" Width="220"/>
+                                    Header="Name" Width="150"/>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Phone}"
+                                    Header="Phone" Width="150"/>
                                 <GridViewColumn
                                     DisplayMemberBinding="{Binding Email}"
                                     Header="Email" Width="200" />
                                 <GridViewColumn
                                     DisplayMemberBinding="{Binding Status}"
-                                    Header="Status" Width="140" />
+                                    Header="Status" Width="100" />
                                 <GridViewColumn
                                     DisplayMemberBinding="{Binding Print}"
-                                    Header="Print" Width="120"  />
+                                    Header="Print" Width="100"  />
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 15 0 15">
                     <Button
                         Style="{StaticResource MaterialDesignFlatMidBgButton}"
                         Width="90"
@@ -140,6 +146,63 @@
                         Margin="10 5"
                         Name="TakeAwayWelcomeButton"
                         Click="TakeAwayWelcomeButton_Click">
+                        WELCOME
+                    </Button>
+                </StackPanel>
+                
+                <StackPanel>
+                    <Label Background="#607d8b" Foreground="White" FontSize="16" Padding="30, 3, 0, 3">Room Reservation</Label>
+                    <ListView Name="RoomReservationListView" ItemsSource="{Binding Path=RoomItems}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn 
+                                    DisplayMemberBinding="{Binding Date}"
+                                    Header="Time/Date" Width="200"/>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding name}"
+                                    Header="Name" Width="200"/>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding phone}"
+                                    Header="Phone" Width="200"/>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Email}"
+                                    Header="Email" Width="200" />
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Status}"
+                                    Header="Status" Width="100" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 15 0 15">
+                    <Button
+                        Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                        Width="90"
+                        Height="25"
+                        FontSize="11"
+                        Margin="10 5"
+                        Name="RoomConfirmButton"
+                        Click="RoomConfirmButton_Click">
+                        CONFIRM
+                    </Button>
+                    <Button
+                        Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                        Width="90"
+                        Height="25"
+                        FontSize="11"
+                        Margin="10 5"
+                        Name="RoomRejectButton"
+                        Click="RoomRejectButton_Click">
+                        REJECT
+                    </Button>
+                    <Button
+                        Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                        Width="90"
+                        Height="25"
+                        FontSize="11"
+                        Margin="10 5"
+                        Name="RoomWelcomeButton"
+                        Click="RoomWelcomeButton_Click">
                         WELCOME
                     </Button>
                 </StackPanel>
