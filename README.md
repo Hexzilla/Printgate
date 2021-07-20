@@ -1,6 +1,3 @@
-# printGate
-C# Printgate
-
 # Printgate
 ![Printgate](https://github.com/jsgrowing315/printGate/blob/main/screenshot1.png)
 
